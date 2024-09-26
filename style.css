@@ -20,7 +20,7 @@ body{
     background-color: rgb(251, 245, 237);
 }
 main {
-    width: 90%;
+    width: 80%;
 }
 
 h1 {
@@ -40,10 +40,12 @@ h2 {
 li {
     margin-bottom: 1rem;
     margin-left: 1rem;
+    font-size: large;
 }
 p {
     margin-bottom: 1rem;
     margin-left: 1rem;
+    font-size: large;
 }
 
 
