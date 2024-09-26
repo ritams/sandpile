@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandpiles Demo</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+      </script>
+    
+    <script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+
+</head>
+<body>
+    <main>
+        <section>
+            <h1>Sandpiles</h1>
+            <div class="flex-row">
+                <canvas id="sandpile-canvas" width="505", height="505"></canvas>
+                
+                <div class="controls">
+                    <button id="play-pause-btn">Play</button>
+                    <div>
+                        <label for="grid-size-slider">Grid Size:</label>
+                        <input type="range" id="grid-size-slider" min="5" max="200" value="101" class="thick-slider">
+                        <span id="grid-size-value">101</span>
+                    </div>
+                    <div>
+                        <label for="speed-slider">Animation Speed (ms):</label>
+                        <input type="range" id="speed-slider" min="1" max="500" value="10" class="thick-slider">
+                        <span id="speed-value">10</span>
+                    </div>
+                </div>
+                <img src="sandpile-real.jpeg" alt="Image of a real sandpile" class="real-sandpile">
+            </div>
+            <div class="divider">
+
+            </div>
+        </section>
+        
+        <section>
+            <h1>How it works?</h1>
+            <div class="flex-row space-around">
+                <div class="card">
+                    <h2>Stable</h2>
+                    <img src="demo-1.svg" alt="" class="demo">
+                </div>
+                <div class="card">
+                    <h2>Stable</h2>
+                    <img src="demo-2.svg" alt="" class="demo">
+                </div>
+                <div class="card">
+                    <h2>Stable</h2>
+                    <img src="demo-3.svg" alt="" class="demo">
+                </div>
+            </div>
+            <div class="divider">
+
+            </div>
+            <div class="flex-row space-around">
+                <div class="card">
+                    <h2>Stable</h2>
+                    <img src="demo-4.svg" alt="" class="demo">
+                </div>
+                <div class="card">
+                    <h2>Unstable - topple</h2>
+                    <img src="demo-5.svg" alt="" class="demo">
+                </div>
+                <div class="card">
+                    <h2>Stable</h2>
+                    <img src="demo-6.svg" alt="" class="demo">
+                </div>
+                
+            </div>
+            <div class="divider">
+
+            </div>
+        </section>
+        <section>
+            <h1>More mathematically...</h1>
+            <div class="wrapper">
+            <p>The sandpile model is a <a href="/wiki/Cellular_automaton" title="Cellular automaton">cellular automaton</a> originally defined on a <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle N\times M}">
+                <semantics>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mstyle displaystyle="true" scriptlevel="0">
+                      <mi>N</mi>
+                      <mo>×<!-- × --></mo>
+                      <mi>M</mi>
+                    </mstyle>
+                  </mrow>
+                  <annotation encoding="application/x-tex">{\displaystyle N\times M}</annotation>
+                </semantics>
+              </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/5f4c0be393d026f1ee4c2baa3e84a774013914a2" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.338ex; width:7.346ex; height:2.176ex;" alt="{\displaystyle N\times M}"></span> rectangular grid (<i>checkerboard</i>) <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \Gamma \subset \mathbb {Z} ^{2}}">
+                <semantics>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mstyle displaystyle="true" scriptlevel="0">
+                      <mi mathvariant="normal">Γ<!-- Γ --></mi>
+                      <mo>⊂<!-- ⊂ --></mo>
+                      <msup>
+                        <mrow class="MJX-TeXAtom-ORD">
+                          <mi mathvariant="double-struck">Z</mi>
+                        </mrow>
+                        <mrow class="MJX-TeXAtom-ORD">
+                          <mn>2</mn>
+                        </mrow>
+                      </msup>
+                    </mstyle>
+                  </mrow>
+                  <annotation encoding="application/x-tex">{\displaystyle \Gamma \subset \mathbb {Z} ^{2}}</annotation>
+                </semantics>
+              </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/ebbe7c630b8624da000d610420363cb2a1cf310d" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.338ex; width:7.156ex; height:2.676ex;" alt="{\displaystyle \Gamma \subset \mathbb {Z} ^{2}}"></span> of the <a href="/wiki/Square_lattice" title="Square lattice">standard square lattice</a> <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle \mathbb {Z} ^{2}}">
+                <semantics>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mstyle displaystyle="true" scriptlevel="0">
+                      <msup>
+                        <mrow class="MJX-TeXAtom-ORD">
+                          <mi mathvariant="double-struck">Z</mi>
+                        </mrow>
+                        <mrow class="MJX-TeXAtom-ORD">
+                          <mn>2</mn>
+                        </mrow>
+                      </msup>
+                    </mstyle>
+                  </mrow>
+                  <annotation encoding="application/x-tex">{\displaystyle \mathbb {Z} ^{2}}</annotation>
+                </semantics>
+              </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/a807ab4cb3de13a66771b5a303aca31e0391e6aa" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.338ex; width:2.605ex; height:2.676ex;" alt="{\displaystyle \mathbb {Z} ^{2}}"></span>.
+              To each vertex (<i>side</i>, <i>field</i>) <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle (x,y)\in \Gamma }">
+                <semantics>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mstyle displaystyle="true" scriptlevel="0">
+                      <mo stretchy="false">(</mo>
+                      <mi>x</mi>
+                      <mo>,</mo>
+                      <mi>y</mi>
+                      <mo stretchy="false">)</mo>
+                      <mo>∈<!-- ∈ --></mo>
+                      <mi mathvariant="normal">Γ<!-- Γ --></mi>
+                    </mstyle>
+                  </mrow>
+                  <annotation encoding="application/x-tex">{\displaystyle (x,y)\in \Gamma }</annotation>
+                </semantics>
+              </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/7612c5dfddb96ff1f771ad94fbe348064b1c5041" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:9.622ex; height:2.843ex;" alt="{\displaystyle (x,y)\in \Gamma }"></span> of the grid, we associate a value (<i>grains of sand</i>, <i>slope</i>, <i>particles</i>) <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle z_{0}(x,y)\in \{0,1,2,3\}}">
+                <semantics>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mstyle displaystyle="true" scriptlevel="0">
+                      <msub>
+                        <mi>z</mi>
+                        <mrow class="MJX-TeXAtom-ORD">
+                          <mn>0</mn>
+                        </mrow>
+                      </msub>
+                      <mo stretchy="false">(</mo>
+                      <mi>x</mi>
+                      <mo>,</mo>
+                      <mi>y</mi>
+                      <mo stretchy="false">)</mo>
+                      <mo>∈<!-- ∈ --></mo>
+                      <mo fence="false" stretchy="false">{</mo>
+                      <mn>0</mn>
+                      <mo>,</mo>
+                      <mn>1</mn>
+                      <mo>,</mo>
+                      <mn>2</mn>
+                      <mo>,</mo>
+                      <mn>3</mn>
+                      <mo fence="false" stretchy="false">}</mo>
+                    </mstyle>
+                  </mrow>
+                  <annotation encoding="application/x-tex">{\displaystyle z_{0}(x,y)\in \{0,1,2,3\}}</annotation>
+                </semantics>
+              </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/6d28635b8767fed9bb2d13755cc6764ac0601d5b" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:20.381ex; height:2.843ex;" alt="{\displaystyle z_{0}(x,y)\in \{0,1,2,3\}}"></span>, with <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle z_{0}\in \{0,1,2,3\}^{\Gamma }}">
+                <semantics>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mstyle displaystyle="true" scriptlevel="0">
+                      <msub>
+                        <mi>z</mi>
+                        <mrow class="MJX-TeXAtom-ORD">
+                          <mn>0</mn>
+                        </mrow>
+                      </msub>
+                      <mo>∈<!-- ∈ --></mo>
+                      <mo fence="false" stretchy="false">{</mo>
+                      <mn>0</mn>
+                      <mo>,</mo>
+                      <mn>1</mn>
+                      <mo>,</mo>
+                      <mn>2</mn>
+                      <mo>,</mo>
+                      <mn>3</mn>
+                      <msup>
+                        <mo fence="false" stretchy="false">}</mo>
+                        <mrow class="MJX-TeXAtom-ORD">
+                          <mi mathvariant="normal">Γ<!-- Γ --></mi>
+                        </mrow>
+                      </msup>
+                    </mstyle>
+                  </mrow>
+                  <annotation encoding="application/x-tex">{\displaystyle z_{0}\in \{0,1,2,3\}^{\Gamma }}</annotation>
+                </semantics>
+              </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/85bd462c6d9ce1ee810e4d67488b75719163227c" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:16.312ex; height:3.176ex;" alt="{\displaystyle z_{0}\in \{0,1,2,3\}^{\Gamma }}"></span> referred to as the (initial) configuration of the sandpile.
+              </p>
+
+              <p>The dynamics of the automaton at iteration <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle i\in \mathbb {N} }">
+                <semantics>
+                  <mrow class="MJX-TeXAtom-ORD">
+                    <mstyle displaystyle="true" scriptlevel="0">
+                      <mi>i</mi>
+                      <mo>∈<!-- ∈ --></mo>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mi mathvariant="double-struck">N</mi>
+                      </mrow>
+                    </mstyle>
+                  </mrow>
+                  <annotation encoding="application/x-tex">{\displaystyle i\in \mathbb {N} }</annotation>
+                </semantics>
+              </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/e64c8c5906eb3eb9d7a8b1ed1e31de4e5fc6c632" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.338ex; width:5.321ex; height:2.176ex;" alt="{\displaystyle i\in \mathbb {N} }"></span> are then defined as follows:
+              </p>
+            <ol>
+                <li>Choose a random vertex <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle (x_{i},y_{i})\in \Gamma }">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <mo stretchy="false">(</mo>
+                          <msub>
+                            <mi>x</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo>,</mo>
+                          <msub>
+                            <mi>y</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">)</mo>
+                          <mo>∈<!-- ∈ --></mo>
+                          <mi mathvariant="normal">Γ<!-- Γ --></mi>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle (x_{i},y_{i})\in \Gamma }</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/9e90cd9383b97a282ba648f79a0b44f40126a099" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:11.205ex; height:2.843ex;" alt="{\displaystyle (x_{i},y_{i})\in \Gamma }"></span> according to some probability distribution (usually uniform). For the above simulation the vertex at the center of the grid is always chosen.</li>
+                <li>Add one grain of sand to this vertex while letting the grain numbers for all other vertices unchanged, i.e. set<br><span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle z_{i}(x_{i},y_{i})=z_{i-1}(x_{i},y_{i})+1}">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">(</mo>
+                          <msub>
+                            <mi>x</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo>,</mo>
+                          <msub>
+                            <mi>y</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">)</mo>
+                          <mo>=</mo>
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                              <mo>−<!-- − --></mo>
+                              <mn>1</mn>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">(</mo>
+                          <msub>
+                            <mi>x</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo>,</mo>
+                          <msub>
+                            <mi>y</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">)</mo>
+                          <mo>+</mo>
+                          <mn>1</mn>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle z_{i}(x_{i},y_{i})=z_{i-1}(x_{i},y_{i})+1}</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/d0f30f00dc4230ffd2fb3eb4e4efbdae1035591d" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:26.787ex; height:2.843ex;" alt="{\displaystyle z_{i}(x_{i},y_{i})=z_{i-1}(x_{i},y_{i})+1}"></span> and<br><span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle z_{i}(x,y)=z_{i-1}(x,y)}">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">(</mo>
+                          <mi>x</mi>
+                          <mo>,</mo>
+                          <mi>y</mi>
+                          <mo stretchy="false">)</mo>
+                          <mo>=</mo>
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                              <mo>−<!-- − --></mo>
+                              <mn>1</mn>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">(</mo>
+                          <mi>x</mi>
+                          <mo>,</mo>
+                          <mi>y</mi>
+                          <mo stretchy="false">)</mo>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle z_{i}(x,y)=z_{i-1}(x,y)}</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/6e56712cd282b3f9ab5cb00d6c901112b49e0ab6" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:19.617ex; height:2.843ex;" alt="{\displaystyle z_{i}(x,y)=z_{i-1}(x,y)}"></span> for all <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle (x,y)\neq (x_{i},y_{i})}">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <mo stretchy="false">(</mo>
+                          <mi>x</mi>
+                          <mo>,</mo>
+                          <mi>y</mi>
+                          <mo stretchy="false">)</mo>
+                          <mo>≠<!-- ≠ --></mo>
+                          <mo stretchy="false">(</mo>
+                          <msub>
+                            <mi>x</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo>,</mo>
+                          <msub>
+                            <mi>y</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">)</mo>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle (x,y)\neq (x_{i},y_{i})}</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/1e8df160e8efc4228a9d5a4e6a7d3cbd61a6910d" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:15.338ex; height:2.843ex;" alt="{\displaystyle (x,y)\neq (x_{i},y_{i})}"></span>.</li>
+                  <li>If all vertices are <i>stable</i>, i.e. <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle z_{i}(x,y)<4}">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">(</mo>
+                          <mi>x</mi>
+                          <mo>,</mo>
+                          <mi>y</mi>
+                          <mo stretchy="false">)</mo>
+                          <mo>&lt;</mo>
+                          <mn>4</mn>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle z_{i}(x,y)&lt;4}</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/3a216d5c05a83c97d423a9df6485d262c0078fbd" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:11.47ex; height:2.843ex;" alt="{\displaystyle z_{i}(x,y)<4}"></span> for all <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle (x,y)\in \Gamma }">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <mo stretchy="false">(</mo>
+                          <mi>x</mi>
+                          <mo>,</mo>
+                          <mi>y</mi>
+                          <mo stretchy="false">)</mo>
+                          <mo>∈<!-- ∈ --></mo>
+                          <mi mathvariant="normal">Γ<!-- Γ --></mi>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle (x,y)\in \Gamma }</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/7612c5dfddb96ff1f771ad94fbe348064b1c5041" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:9.622ex; height:2.843ex;" alt="{\displaystyle (x,y)\in \Gamma }"></span>, also the configuration <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle z_{i}}">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle z_{i}}</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/5c6e920bac39ad09fff4efef16254595091a1025" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:1.881ex; height:2.009ex;" alt="{\displaystyle z_{i}}"></span> is said to be stable. In this case, continue with the next iteration.</li>
+                  <li>If at least one vertex is <i>unstable</i>, i.e. <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle z_{i}(x_{u},y_{u})\geq 4}">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">(</mo>
+                          <msub>
+                            <mi>x</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo>,</mo>
+                          <msub>
+                            <mi>y</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">)</mo>
+                          <mo>≥<!-- ≥ --></mo>
+                          <mn>4</mn>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle z_{i}(x_{u},y_{u})\geq 4}</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/016667514b6c1f9597adc7d6f3f64e26b8f5897d" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:13.799ex; height:2.843ex;" alt="{\displaystyle z_{i}(x_{u},y_{u})\geq 4}"></span> for some <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle (x_{u},y_{u})\in \Gamma }">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <mo stretchy="false">(</mo>
+                          <msub>
+                            <mi>x</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo>,</mo>
+                          <msub>
+                            <mi>y</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">)</mo>
+                          <mo>∈<!-- ∈ --></mo>
+                          <mi mathvariant="normal">Γ<!-- Γ --></mi>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle (x_{u},y_{u})\in \Gamma }</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/58df919d6f4eaa6bbca0cdf50f730f8857fa54e1" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:11.951ex; height:2.843ex;" alt="{\displaystyle (x_{u},y_{u})\in \Gamma }"></span>, the whole configuration <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle z_{i}}">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle z_{i}}</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/5c6e920bac39ad09fff4efef16254595091a1025" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:1.881ex; height:2.009ex;" alt="{\displaystyle z_{i}}"></span> is said to be unstable. In this case, choose any unstable vertex <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle (x_{u},y_{u})\in \Gamma }">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <mo stretchy="false">(</mo>
+                          <msub>
+                            <mi>x</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo>,</mo>
+                          <msub>
+                            <mi>y</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">)</mo>
+                          <mo>∈<!-- ∈ --></mo>
+                          <mi mathvariant="normal">Γ<!-- Γ --></mi>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle (x_{u},y_{u})\in \Gamma }</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/58df919d6f4eaa6bbca0cdf50f730f8857fa54e1" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:11.951ex; height:2.843ex;" alt="{\displaystyle (x_{u},y_{u})\in \Gamma }"></span> at random. <i>Topple</i> this vertex by reducing its grain number by four and by increasing the grain numbers of each of its (at maximum four) direct neighbors by one, i.e. set<br><span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle z_{i}(x_{u},y_{u})\rightarrow z_{i}(x_{u},y_{u})-4,}">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">(</mo>
+                          <msub>
+                            <mi>x</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo>,</mo>
+                          <msub>
+                            <mi>y</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">)</mo>
+                          <mo stretchy="false">→<!-- → --></mo>
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">(</mo>
+                          <msub>
+                            <mi>x</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo>,</mo>
+                          <msub>
+                            <mi>y</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">)</mo>
+                          <mo>−<!-- − --></mo>
+                          <mn>4</mn>
+                          <mo>,</mo>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle z_{i}(x_{u},y_{u})\rightarrow z_{i}(x_{u},y_{u})-4,}</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/5daafdea97aeb1248038cf92b31649573313831f" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:27.34ex; height:2.843ex;" alt="{\displaystyle z_{i}(x_{u},y_{u})\rightarrow z_{i}(x_{u},y_{u})-4,}"></span>, and<br><span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle z_{i}(x_{u}\pm 1,y_{u}\pm 1)\rightarrow z_{i}(x_{u}\pm 1,y_{u}\pm 1)+1}">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">(</mo>
+                          <msub>
+                            <mi>x</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo>±<!-- ± --></mo>
+                          <mn>1</mn>
+                          <mo>,</mo>
+                          <msub>
+                            <mi>y</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo>±<!-- ± --></mo>
+                          <mn>1</mn>
+                          <mo stretchy="false">)</mo>
+                          <mo stretchy="false">→<!-- → --></mo>
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                          <mo stretchy="false">(</mo>
+                          <msub>
+                            <mi>x</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo>±<!-- ± --></mo>
+                          <mn>1</mn>
+                          <mo>,</mo>
+                          <msub>
+                            <mi>y</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo>±<!-- ± --></mo>
+                          <mn>1</mn>
+                          <mo stretchy="false">)</mo>
+                          <mo>+</mo>
+                          <mn>1</mn>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle z_{i}(x_{u}\pm 1,y_{u}\pm 1)\rightarrow z_{i}(x_{u}\pm 1,y_{u}\pm 1)+1}</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/82e3bfbf955ae5484fa919a7ecc710ed94e519d8" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:42.704ex; height:2.843ex;" alt="{\displaystyle z_{i}(x_{u}\pm 1,y_{u}\pm 1)\rightarrow z_{i}(x_{u}\pm 1,y_{u}\pm 1)+1}"></span> if <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle (x_{u}\pm 1,y_{u}\pm 1)\in \Gamma }">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <mo stretchy="false">(</mo>
+                          <msub>
+                            <mi>x</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo>±<!-- ± --></mo>
+                          <mn>1</mn>
+                          <mo>,</mo>
+                          <msub>
+                            <mi>y</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>u</mi>
+                            </mrow>
+                          </msub>
+                          <mo>±<!-- ± --></mo>
+                          <mn>1</mn>
+                          <mo stretchy="false">)</mo>
+                          <mo>∈<!-- ∈ --></mo>
+                          <mi mathvariant="normal">Γ<!-- Γ --></mi>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle (x_{u}\pm 1,y_{u}\pm 1)\in \Gamma }</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/dd5c515814f4d0030dad4a5fcb0c10d0d8d3896d" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.838ex; width:19.956ex; height:2.843ex;" alt="{\displaystyle (x_{u}\pm 1,y_{u}\pm 1)\in \Gamma }"></span>.<br>If a vertex at the boundary of the domain topples, this results in a net loss of grains (two grains at the corner of the grid, one grain otherwise).</li>
+                  <li>Due to the redistribution of grains, the toppling of one vertex can render other vertices unstable. Thus, repeat the toppling procedure until all vertices of <span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\displaystyle z_{i}}">
+                    <semantics>
+                      <mrow class="MJX-TeXAtom-ORD">
+                        <mstyle displaystyle="true" scriptlevel="0">
+                          <msub>
+                            <mi>z</mi>
+                            <mrow class="MJX-TeXAtom-ORD">
+                              <mi>i</mi>
+                            </mrow>
+                          </msub>
+                        </mstyle>
+                      </mrow>
+                      <annotation encoding="application/x-tex">{\displaystyle z_{i}}</annotation>
+                    </semantics>
+                  </math></span><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/5c6e920bac39ad09fff4efef16254595091a1025" class="mwe-math-fallback-image-inline mw-invert skin-invert" aria-hidden="true" style="vertical-align: -0.671ex; width:1.881ex; height:2.009ex;" alt="{\displaystyle z_{i}}"></span> eventually become stable and continue with the next iteration.</li>
+                </ol>
+                <p>Source - Wikipedia</p>
+            </div>
+            <div class="divider">
+
+            </div>
+        </section>
+        <section>
+            <h1>Power law!!</h1>
+        </section>
+    </main>
+    
+    <script src="app.js"></script>
+</body>
+</html>

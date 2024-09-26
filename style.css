@@ -1,0 +1,142 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    font-family: Poppins, sans-serif;
+    font-size: 16px;
+}
+
+* {
+    /* border: 1px solid red; */
+}
+
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(251, 245, 237);
+}
+main {
+    width: 90%;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 200;
+    padding-bottom: 3rem;
+    padding-top: 1rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 200;
+    padding-bottom: 1rem;
+    /* padding-top: 1rem; */
+}
+
+li {
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+}
+p {
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+}
+
+
+
+.real-sandpile {
+    width: 25%;
+    border-radius: 2rem;
+}
+
+
+
+canvas {
+    /* background-color: blue; */
+    border-radius: 1rem;
+    width: 30%;
+    border: 1px solid black;
+
+}
+
+
+.divider {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.space-around {
+    justify-content: space-around;
+}
+
+.card {
+    width: 15%;
+    /* background-color: yellow; */
+}
+.demo {
+    width: 100%;
+}
+
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: space-evenly;
+
+    padding: 10px;
+    /* background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
+}
+
+.controls button {
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 1rem;
+}
+
+.controls div {
+    margin-bottom: 10px;
+}
+
+
+.thick-slider {
+    -webkit-appearance: none; /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Slider track width */
+    height: 1.5rem; /* Slider track height */
+    background: #9f9f9f; /* Slider track color */
+    /* outline; Remove outline */
+    opacity: 1; /* Set transparency */
+    transition: opacity .15s ease-in-out; /* Smooth transition for opacity */
+    border-radius: 1rem; /* Rounded track edges */
+    /* border: 1px solid black; */
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+}
+
+.thick-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default CSS styles */
+    appearance: none;
+    width: 30px; /* Thumb width */
+    height: 30px; /* Thumb height */
+    background: radial-gradient(circle, #007bff, #0056b3); /* Gradient for thumb */
+    border: 3px solid white; /* White border around thumb */
+    border-radius: 50%; /* Fully rounded for circle */
+    cursor: pointer; /* Cursor on hover */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Shadow effect */
+    transition: transform 0.15s ease; /* Smooth scaling transition */
+}
